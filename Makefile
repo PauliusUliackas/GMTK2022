@@ -11,6 +11,9 @@ output: *.o
 ./Game.o: ./Engine/Game.cpp
 	g++ -I src/include -c ./Engine/Game.cpp -o Game.o
 
+./Lifes.o: ./Engine/Lifes.cpp
+	g++ -I src/include -c ./Engine/Lifes.cpp -o Lifes.o
+
 ./TokenHandler.o: ./Engine/TokenHandler.cpp
 	g++ -I src/include -c ./Engine/TokenHandler.cpp -o TokenHandler.o
 
@@ -31,6 +34,15 @@ output: *.o
 
 ./DeltaTime.o: ./DS/DeltaTime.cpp
 	g++ -I src/include -c ./DS/DeltaTime.cpp -o DeltaTime.o
+
+./Button.o: ./DS/Button.cpp
+	g++ -I src/include -c ./DS/Button.cpp -o Button.o
+
+./Functions.o: ./DS/Functions.cpp
+	g++ -I src/include -c ./DS/Functions.cpp -o Functions.o
+
+./Dice.o: ./Tokens/Dice.cpp
+	g++ -I src/include -c ./Tokens/Dice.cpp -o Dice.o
 
 run:
 	./game.exe

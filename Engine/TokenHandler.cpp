@@ -3,9 +3,9 @@
 
 TokenHandler::TokenHandler(/* args */)
 {
-    player = new Player(10, 20, 100, 100);
-    tokens.push_back(player);
-    tokens.push_back(new Character( 400, 40, 30, 30));
+    //player = new Player(10, 20, 100, 100);
+    //tokens.push_back(player);
+    //tokens.push_back(new Character( 400, 40, 30, 30));
 };
 
 TokenHandler::~TokenHandler()
