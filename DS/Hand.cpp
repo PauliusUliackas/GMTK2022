@@ -12,7 +12,11 @@ Hand::~Hand()
 
 void Hand::draw(int x, Database db)
 {
-    for(int i = 0; i < x; i++) hand.push_back(db.getRandomCard());
+    for(int i = 0; i < x; i++)
+    {
+        if(hand.size() > 5) break;
+        hand.push_back(db.getRandomCard());
+    }
     selected = 0;
 }
 
@@ -40,7 +44,7 @@ void Hand::render(sf::RenderWindow* g)
 {
     for(int i = 0; i < hand.size(); i++)
     {
-        hand[i]->render(g, selected == i, 100+80*i);
+        hand[i]->render(g, selected == i, 50+80*i);
     }
 }
 
@@ -51,7 +55,12 @@ void Hand::enemyRender(sf::RenderWindow* g)
         sf::Sprite sprite;
         sprite.scale(4,4);
         sprite.setTexture(txt);
-        sprite.setPosition(250+40*i, 0);
+        sprite.setPosition(180+40*i, 0);
         g->draw(sprite);
     }
+};
+
+void Hand::discard()
+{
+    hand.clear();
 }

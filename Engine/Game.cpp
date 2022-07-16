@@ -10,10 +10,15 @@ Game::Game()
     Button* AB = new Button("AB");
     Button* B = new Button("B");
     Button* PB = new Button("PB");
+    Button* NB = new Button("NB");
+    Button* QB = new Button("QB");
     buttons.push_back(roll);
     buttons.push_back(AB);
     buttons.push_back(B);
     buttons.push_back(PB);
+    buttons.push_back(NB);
+    buttons.push_back(QB);
+    
     currbutton = 0;
 
     bet = 0;
@@ -27,8 +32,11 @@ Game::Game()
     //test = new Card("Side that the cube lands on is + 2");
     test = db.getRandomCard();
 
-    ph.draw(5, db);
-    eh.draw(5, db);
+    newRound();
+
+    texture.loadFromFile("Art/Arrow.png");
+    arrow.setTexture(texture);
+    arrow.scale(2,2);
 };
 
 Game::~Game()
@@ -51,6 +59,8 @@ void Game::update()
 
         if(side <= 3) player.damage(bet);
         else enemy.damage(bet);
+
+        newRound();
     }
 
     int pHp = player.damage(0);
@@ -66,6 +76,8 @@ void Game::update()
     {
         if(bet > eHp) bet = eHp;
     }
+
+    if(bet < currBet) bet = currBet;
     
 
 };
@@ -82,7 +94,25 @@ void Game::render()
 
     ph.render(graphics);
     eh.enemyRender(graphics);
+
+    if(isPlayerTurn) arrow.setPosition(620, 555);
+    else arrow.setPosition(620, 45);
+
+    graphics->draw(arrow);
+
 };
+
+void Game::newRound()
+{
+    ph.discard();
+    eh.discard();
+    ph.draw(5, db);
+    eh.draw(5, db);
+    isCall = false;
+    isPlayerTurn = true;
+    currBet = 1;
+    bet = 1;
+}
 
 
 void Game::run()
@@ -98,7 +128,8 @@ void Game::run()
 
             if(event.type == sf::Event::KeyPressed)
             {
-                if(event.key.code == sf::Keyboard::Enter)
+
+                if(event.key.code == sf::Keyboard::Enter )//&& isPlayerTurn)
                 {
                     if(currbutton == 0)
                         dice.roll(5);
@@ -109,6 +140,44 @@ void Game::run()
                     if(currbutton == 3)
                     {
                         round.push(ph.play()->getRule());
+                    }
+                    if(currbutton == 4)
+                    {
+                        isPlayerTurn = !isPlayerTurn;
+                        if(isPlayerTurn)
+                        {
+                            ph.draw(1, db);
+                        }
+                        else
+                        {
+                            eh.draw(1,db);
+                        }
+
+                        if(currBet == bet && isCall)
+                        {
+                            dice.roll(5);
+                        }
+                        else if(currBet == bet)
+                        {
+                            isCall = true;
+                        }
+                        else
+                        {
+                            isCall = false;
+                            currBet = bet;
+                        }
+                    }
+                    if(currbutton == 5)
+                    {
+                        while(!round.empty())
+                        {
+                            round.pop();
+                        }
+
+                        if(isPlayerTurn) player.damage(currBet);
+                        else enemy.damage(currBet);
+
+                        newRound();
                     }
                 }
 
@@ -129,7 +198,7 @@ void Game::run()
                 if(event.key.code == sf::Keyboard::Right)
                 {
                     ph.next();
-                };
+                }
             }
             
             if(event.type == sf::Event::KeyReleased)

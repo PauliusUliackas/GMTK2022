@@ -21,7 +21,7 @@ private:
 
     std::vector<Button*> buttons;
 
-    int bet;
+    int bet, currBet;
     sf::Font font;
     sf::Text text;
 
@@ -29,6 +29,11 @@ private:
     Database db;
 
     std::queue<Rule> round;
+
+    sf::Texture texture;
+    sf::Sprite arrow;
+
+    bool isCall, isPlayerTurn;
 
 public:
     Game();
@@ -38,6 +43,7 @@ public:
 private:
     void update();
     void render();
+    void newRound();
 
 };
 

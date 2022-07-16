@@ -30,6 +30,7 @@ Dice::Dice()
     textures[5] = txt6;
 
     triggered = false;
+    delay = 0;
 }
 
 Dice::~Dice()
@@ -55,7 +56,8 @@ void Dice::render(sf::RenderWindow* g)
         delay = 12;
         currentNumber = Functions::Random(1, 7);
     }
-    delay -= DeltaTime::get();
+    if(delay > 0)
+        delay -= DeltaTime::get();
     sf::Sprite s;
     s.setTexture(textures[currentNumber-1]);
     s.setPosition(300, 250);

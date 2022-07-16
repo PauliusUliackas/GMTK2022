@@ -18,4 +18,5 @@ public:
     void prev();
     void render(sf::RenderWindow* g);
     void enemyRender(sf::RenderWindow* g);
+    void discard();
 };
