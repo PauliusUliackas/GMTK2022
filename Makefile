@@ -56,5 +56,8 @@ output: *.o
 ./Database.o: ./Tokens/Database.cpp
 	g++ -I src/include -c ./Tokens/Database.cpp -o Database.o
 
+./AI.o: ./Engine/AI.cpp
+	g++ -I src/include -c ./Engine/AI.cpp -o AI.o
+
 run:
 	./game.exe

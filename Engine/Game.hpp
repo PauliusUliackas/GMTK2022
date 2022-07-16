@@ -7,6 +7,7 @@
 #include "math.h"
 #include "../DS/Hand.hpp"
 #include <queue>
+#include "AI.hpp"
 
 class Game
 {
@@ -25,7 +26,6 @@ private:
     sf::Font font;
     sf::Text text;
 
-    Card* test;
     Database db;
 
     std::queue<Rule> round;
@@ -34,6 +34,11 @@ private:
     sf::Sprite arrow;
 
     bool isCall, isPlayerTurn;
+
+    int playerGoal, enemyGoal;
+    sf::Sprite PG, EG;
+
+    AI ai;
 
 public:
     Game();
@@ -44,6 +49,7 @@ private:
     void update();
     void render();
     void newRound();
+    void nextTurn();
 
 };
 

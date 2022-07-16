@@ -20,4 +20,6 @@ public:
     void render(sf::RenderWindow* g);
     int side();
     bool isOver();
+    bool isRolling();
+    sf::Texture& getTexture(int i);
 };

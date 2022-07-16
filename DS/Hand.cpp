@@ -24,7 +24,7 @@ Card* Hand::play()
 {
     Card* c = hand[selected];
     hand.erase(hand.begin() + selected);
-    next();
+    selected = 0;
     return c;
 }
 
@@ -63,4 +63,14 @@ void Hand::enemyRender(sf::RenderWindow* g)
 void Hand::discard()
 {
     hand.clear();
+}
+
+int Hand::size()
+{
+    return hand.size();
+}
+
+void Hand::add(Card* c)
+{
+    hand.push_back(c);
 }

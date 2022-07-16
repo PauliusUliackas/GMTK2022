@@ -19,4 +19,7 @@ public:
     void render(sf::RenderWindow* g);
     void enemyRender(sf::RenderWindow* g);
     void discard();
+    int size();
+    Card* getSelected();
+    void add(Card* c);
 };

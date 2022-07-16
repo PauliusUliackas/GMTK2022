@@ -74,3 +74,13 @@ bool Dice::isOver()
     }
     return false;
 }
+
+bool Dice::isRolling()
+{
+    return times > 0;
+}
+
+sf::Texture& Dice::getTexture(int i)
+{
+    return textures[i-1];
+}

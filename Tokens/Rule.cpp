@@ -36,8 +36,8 @@ int Rule::interprit(int side)
         }
     }
 
-    //if(side > 6) side = 6;
-    //if(side < 0) side = 0;
+    if(side > 6) side = 6;
+    if(side < 1) side = 1;
 
     return side;
 };

@@ -30,13 +30,18 @@ Game::Game()
     text.setPosition(650, 100);
 
     //test = new Card("Side that the cube lands on is + 2");
-    test = db.getRandomCard();
 
     newRound();
 
     texture.loadFromFile("Art/Arrow.png");
     arrow.setTexture(texture);
     arrow.scale(2,2);
+
+    PG.setPosition(0,500);
+    EG.setPosition(0 ,50);
+
+    PG.scale(2, 2);
+    EG.scale(2,2);
 };
 
 Game::~Game()
@@ -57,8 +62,8 @@ void Game::update()
             round.pop();
         }
 
-        if(side <= 3) player.damage(bet);
-        else enemy.damage(bet);
+        if(playerGoal != side) player.damage(bet);
+        if(enemyGoal != side) enemy.damage(bet);
 
         newRound();
     }
@@ -78,6 +83,23 @@ void Game::update()
     }
 
     if(bet < currBet) bet = currBet;
+
+    if(!isPlayerTurn)
+    {
+        isPlayerTurn = ai.process(enemyGoal, enemy.damage(0), player.damage(0), eh, round, currBet);
+        
+        if(ai.play != nullptr)
+        {
+            round.push(ai.play->getRule());
+            ai.play = nullptr;
+        }
+        bet = ai.bet;
+
+        if(isPlayerTurn)
+            nextTurn();
+    }
+
+    if(currBet-1 > player.damage(0) || currBet-1 > enemy.damage(0)) dice.roll(8);
     
 
 };
@@ -90,8 +112,6 @@ void Game::render()
     text.setString("Your bet: " + std::to_string(bet) +" HP");
     graphics->draw(text);
 
-    test->render(graphics, false, 100);
-
     ph.render(graphics);
     eh.enemyRender(graphics);
 
@@ -99,6 +119,12 @@ void Game::render()
     else arrow.setPosition(620, 45);
 
     graphics->draw(arrow);
+
+    PG.setTexture(dice.getTexture(playerGoal));
+    EG.setTexture(dice.getTexture(enemyGoal));
+
+    graphics->draw(PG);
+    //graphics->draw(EG);
 
 };
 
@@ -110,8 +136,39 @@ void Game::newRound()
     eh.draw(5, db);
     isCall = false;
     isPlayerTurn = true;
-    currBet = 1;
-    bet = 1;
+    currBet = 0;
+    bet = 0;
+
+    playerGoal = Functions::Random(1, 7);
+    enemyGoal = Functions::Random(1, 7);
+    ai.reset();
+}
+
+void Game::nextTurn()
+{
+    if(isPlayerTurn)
+    {
+        ph.draw(1, db);
+    }
+    else
+    {
+        eh.draw(1,db);
+    }
+
+    if(currBet == bet && isCall)
+    {
+        std::cout<<"Roll"<<std::endl;
+        dice.roll(5);
+    }
+    else if(currBet == bet)
+    {
+        isCall = true;
+    }
+    else
+    {
+        isCall = false;
+        currBet = bet;
+    }
 }
 
 
@@ -129,7 +186,7 @@ void Game::run()
             if(event.type == sf::Event::KeyPressed)
             {
 
-                if(event.key.code == sf::Keyboard::Enter )//&& isPlayerTurn)
+                if(event.key.code == sf::Keyboard::Enter && !dice.isRolling() && isPlayerTurn)
                 {
                     if(currbutton == 0)
                         dice.roll(5);
@@ -137,35 +194,16 @@ void Game::run()
                         bet++;
                     if(currbutton == 2)
                         bet--;
-                    if(currbutton == 3)
+                    if(currbutton == 3 && ph.size() > 0)
                     {
-                        round.push(ph.play()->getRule());
+                        Card* c = ph.play();
+                        ai.predictPlayer(c->getRule(), round);
+                        round.push(c->getRule());
                     }
                     if(currbutton == 4)
                     {
                         isPlayerTurn = !isPlayerTurn;
-                        if(isPlayerTurn)
-                        {
-                            ph.draw(1, db);
-                        }
-                        else
-                        {
-                            eh.draw(1,db);
-                        }
-
-                        if(currBet == bet && isCall)
-                        {
-                            dice.roll(5);
-                        }
-                        else if(currBet == bet)
-                        {
-                            isCall = true;
-                        }
-                        else
-                        {
-                            isCall = false;
-                            currBet = bet;
-                        }
+                        nextTurn();
                     }
                     if(currbutton == 5)
                     {
@@ -177,6 +215,7 @@ void Game::run()
                         if(isPlayerTurn) player.damage(currBet);
                         else enemy.damage(currBet);
 
+                        isPlayerTurn = !isPlayerTurn;
                         newRound();
                     }
                 }
