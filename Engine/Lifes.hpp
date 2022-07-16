@@ -1,14 +1,15 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-
+#include "../DS/DeltaTime.hpp"
 class Lifes
 {
 private:
     int hp;
     sf::Font font;
     sf::Text txt;
-
+    int length;
+    float timer;
 public:
     Lifes();
     ~Lifes();

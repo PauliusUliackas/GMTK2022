@@ -12,6 +12,7 @@ private:
     int times;
     sf::Texture textures[6];
     float delay;
+    bool triggered;
 public:
     Dice();
     ~Dice();

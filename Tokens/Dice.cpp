@@ -28,6 +28,8 @@ Dice::Dice()
     sf::Texture txt6;
     txt6.loadFromFile("Art/6.png");
     textures[5] = txt6;
+
+    triggered = false;
 }
 
 Dice::~Dice()
@@ -41,6 +43,7 @@ int Dice::side()
 
 void Dice::roll(int times)
 {
+    triggered = true;
     this->times = times;
 };
 
@@ -50,7 +53,7 @@ void Dice::render(sf::RenderWindow* g)
     {
         times--;
         delay = 12;
-        currentNumber = Functions::Random(1, 6);
+        currentNumber = Functions::Random(1, 7);
     }
     delay -= DeltaTime::get();
     sf::Sprite s;
@@ -62,5 +65,10 @@ void Dice::render(sf::RenderWindow* g)
 
 bool Dice::isOver()
 {
-    return times <= 0;
+    if(triggered && times <= 0)
+    {
+        triggered = false;
+        return true;
+    }
+    return false;
 }

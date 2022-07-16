@@ -12,7 +12,12 @@ Button::~Button()
 
 void Button::render(sf::RenderWindow* g, bool isSelected, double x, double y)
 {
-    if(isSelected) sprite.setTexture(sel);
+    sf::Sprite sprite;
+    if(isSelected)
+    { 
+        sprite.setTexture(sel);
+        sprite.scale(1.5,1.5);
+    }
     else sprite.setTexture(nrml);
 
     sprite.setPosition(x, y);

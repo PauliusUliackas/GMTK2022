@@ -12,45 +12,7 @@ Player::~Player()
 
 void Player::handleEvents(sf::Event e)
 {
-    if(e.type == sf::Event::KeyPressed)
-    {
-        if(e.key.code == sf::Keyboard::W)
-        {
-            inputs[0] = true;
-        }
-        if(e.key.code == sf::Keyboard::A)
-        {
-            inputs[1] = true;
-        }
-        if(e.key.code == sf::Keyboard::S)
-        {
-            inputs[2] = true;
-        }
-        if(e.key.code == sf::Keyboard::D)
-        {
-            inputs[3] = true;
-        }
-    }
     
-    if(e.type == sf::Event::KeyReleased)
-    {
-        if(e.key.code == sf::Keyboard::W)
-        {
-            inputs[0] = false;
-        }
-        if(e.key.code == sf::Keyboard::A)
-        {
-            inputs[1] = false;
-        }
-        if(e.key.code == sf::Keyboard::S)
-        {
-            inputs[2] = false;
-        }
-        if(e.key.code == sf::Keyboard::D)
-        {
-            inputs[3] = false;
-        }
-    }
 };
 
 void Player::update()

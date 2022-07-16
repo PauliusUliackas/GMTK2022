@@ -29,6 +29,9 @@ output: *.o
 ./Hitbox.o: ./DS/Hitbox.cpp
 	g++ -I src/include -c ./DS/Hitbox.cpp -o Hitbox.o
 
+./Hand.o: ./DS/Hand.cpp
+	g++ -I src/include -c ./DS/Hand.cpp -o Hand.o
+
 ./Animation.o: ./Animation/Animation.cpp
 	g++ -I src/include -c ./Animation/Animation.cpp -o Animation.o
 
@@ -43,6 +46,15 @@ output: *.o
 
 ./Dice.o: ./Tokens/Dice.cpp
 	g++ -I src/include -c ./Tokens/Dice.cpp -o Dice.o
+
+./Rule.o: ./Tokens/Rule.cpp
+	g++ -I src/include -c ./Tokens/Rule.cpp -o Rule.o
+
+./Card.o: ./Tokens/Card.cpp
+	g++ -I src/include -c ./Tokens/Card.cpp -o Card.o
+
+./Database.o: ./Tokens/Database.cpp
+	g++ -I src/include -c ./Tokens/Database.cpp -o Database.o
 
 run:
 	./game.exe

@@ -4,6 +4,7 @@
 #include <stdlib.h>     
 #include <time.h>
 #include <iostream>
+#include <vector>
 
 class Functions
 {
@@ -14,4 +15,5 @@ public:
     ~Functions();
     static void init();
     static int Random(int min, int max);
+    static std::vector<std::string> split(std::string, char c);
 };

@@ -6,7 +6,6 @@ class Button
 {
 private:
     sf::Texture sel, nrml;
-    sf::Sprite sprite;
 public:
     Button(std::string name);
     ~Button();
