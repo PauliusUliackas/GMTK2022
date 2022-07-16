@@ -6,7 +6,7 @@ Game::Game()
     graphics = new sf::RenderWindow(sf::VideoMode(800, 600), "My window");
     Functions::init();
 
-    Button* roll = new Button("RB");
+    Button* roll = new Button("LB");
     Button* AB = new Button("AB");
     Button* B = new Button("B");
     Button* PB = new Button("PB");
@@ -27,7 +27,6 @@ Game::Game()
     text.setFont(font);
     text.setCharacterSize(16);
     text.setFillColor(sf::Color::White);
-    text.setPosition(650, 100);
 
     //test = new Card("Side that the cube lands on is + 2");
 
@@ -42,6 +41,8 @@ Game::Game()
 
     PG.scale(2, 2);
     EG.scale(2,2);
+
+    log = false;
 };
 
 Game::~Game()
@@ -110,6 +111,7 @@ void Game::render()
     dice.render(graphics);
 
     text.setString("Your bet: " + std::to_string(bet) +" HP");
+    text.setPosition(650, 100);
     graphics->draw(text);
 
     ph.render(graphics);
@@ -189,7 +191,9 @@ void Game::run()
                 if(event.key.code == sf::Keyboard::Enter && !dice.isRolling() && isPlayerTurn)
                 {
                     if(currbutton == 0)
-                        dice.roll(5);
+                    {
+                        log = !log;
+                    }
                     if(currbutton == 1)
                         bet++;
                     if(currbutton == 2)
@@ -258,6 +262,23 @@ void Game::run()
 
         update();
         render();
+
+        if(log)
+        {
+            text.setPosition(20, 20);
+            text.setString("Log:");
+            sf::RectangleShape rs(sf::Vector2f(600, 600));
+            rs.setFillColor(sf::Color::Black);
+            graphics->draw(rs);
+            graphics->draw(text);
+            for (size_t i = 0; i < round.size(); i++)
+            {
+                round.front().write(graphics, 20, 40+i * 30, text);
+                round.push(round.front());
+                round.pop();
+            }
+        }
+
         DeltaTime::tick();
         // end the current frame
         graphics->display();

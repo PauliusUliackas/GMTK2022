@@ -81,24 +81,28 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
 
 int AI::search(std::vector<Rule> rules, Hand& hand, int goal, int depth, bool winning, int chance)
 {
-
+    std::cout<<"3.1"<<std::endl;
     for(int i = 0; i< hand.size(); i++)
     {
         Card* c = hand.play();
         rules.push_back(c->getRule());
+        //std::cout<<"3.1.0"<<std::endl;
         selfChances[i] = selfChance(rules, goal);
+        //std::cout<<"3.1.1"<<std::endl;
         playerChances[i] = enemyChance(rules);
+        //std::cout<<"3.1.2"<<std::endl;
         hand.next();
         if(depth > 0 && hand.size() > 0) search(rules, hand, goal, depth-1, winning, chance);
+        //std::cout<<"3.1.3"<<std::endl;
         hand.add(c);
         rules.pop_back();
     }
-
+    //std::cout<<"3.2"<<std::endl;
     if(!winning) playerChances = {0,0,0,0,0,0};
 
     int out = -1;
     double max = chance;
-    for(int i = 0; i < selfChances.size(); i++)
+    for(int i = 0; i < hand.size(); i++)
     {
         if(selfChances[i] - playerChances[i] >= max)
         {
@@ -106,6 +110,7 @@ int AI::search(std::vector<Rule> rules, Hand& hand, int goal, int depth, bool wi
             max = selfChances[i] - playerChances[i];
         }
     }
+    
     return out;
 }
 
@@ -139,22 +144,27 @@ double AI::enemyChance(std::vector<Rule> rules)
     }
 
     double chance = 0;
-
+    //std::cout<<"3.1.1.1"<<std::endl;
     for(int i: outs)
     {
-        for(int player: playerGoal)
+        for(int x = 0; x < playerGoal.size(); x++)
         {
-            if(player == i) chance += playerProbabilities[playerGoal[player]-1];
+            int player = playerGoal[x];
+            if(player == i)
+            {
+                //std::cout<<player<<":"<<playerProbabilities[player-1]<<std::endl;
+                chance += playerProbabilities[playerGoal[x]-1];
+            }
         }
     }
-
+    //std::cout<<"3.1.1.2"<<std::endl;
     return chance;
 }
 
 void AI::reset()
 {
     playerGoal.clear();
-    playerProbabilities = {};
+    playerProbabilities = {0,0,0,0,0,0};
     for(int i = 1; i <= 6; i++) playerGoal.push_back(i);
     probabilities = {1,2,3,4,5,6};
     selfChances = {0,0,0,0,0,0};
@@ -177,8 +187,6 @@ void AI::predictPlayer(Rule newRule, std::queue<Rule> currentRules)
     }
 
     std::vector<int> prev = {1,2,3,4,5,6};
-    std::cout<<"-------------"<<std::endl;
-    std::cout<<rules.size()<<std::endl;
 
     for(int i = 0; i < prev.size(); i++)
     {
@@ -187,9 +195,6 @@ void AI::predictPlayer(Rule newRule, std::queue<Rule> currentRules)
             prev[i] = r.interprit(i+1);
         }
     }
-
-    std::cout<<"Previously"<<std::endl;
-    print(prev);
 
     std::vector<double> pProbabilites = {0,0,0,0,0,0};
 
@@ -202,12 +207,6 @@ void AI::predictPlayer(Rule newRule, std::queue<Rule> currentRules)
     {
         i/=6;
     }
-
-    std::cout<<"Previous Probabilities"<<std::endl;
-    for(auto i: pProbabilites)
-    {
-        std::cout<<i<<std::endl;
-    }
     
     // -----------------------------------------
     std::vector<int> after = {1,2,3,4,5,6};
@@ -217,9 +216,6 @@ void AI::predictPlayer(Rule newRule, std::queue<Rule> currentRules)
         after[index2] = newRule.interprit(r);
         index2++;
     }
-
-    std::cout<<"After"<<std::endl;
-    print(after);
     
     std::vector<double> newProbabilites = {0,0,0,0,0,0};
 
@@ -234,12 +230,6 @@ void AI::predictPlayer(Rule newRule, std::queue<Rule> currentRules)
     for(double &i : newProbabilites)
     {
         i/=6;
-    }
-
-    std::cout<<"ALL Probabilities"<<std::endl;
-    for(double i: newProbabilites)
-    {
-        std::cout<<i<<std::endl;
     }
 
     for(int i = playerGoal.size()-1; i >= 0; i--)
@@ -269,8 +259,6 @@ void AI::predictPlayer(Rule newRule, std::queue<Rule> currentRules)
     }
 
     playerProbabilities = newProbabilites;
-    std::cout<<"Player"<<std::endl;
-    print(playerGoal);
 
 }
 

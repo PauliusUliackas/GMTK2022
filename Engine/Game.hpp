@@ -39,6 +39,7 @@ private:
     sf::Sprite PG, EG;
 
     AI ai;
+    bool log;
 
 public:
     Game();
