@@ -45,7 +45,7 @@ Game::Game()
     EG.scale(2,2);
 
     log = false;
-
+    manual = false;
     state =  0;
 };
 
@@ -76,19 +76,6 @@ void Game::update()
     int pHp = player.damage(0);
     int eHp = enemy.damage(0);
 
-    if(bet < 0) bet = 0;
-
-    if(pHp < eHp)
-    {
-        if(bet > pHp) bet = pHp;
-    }
-    else
-    {
-        if(bet > eHp) bet = eHp;
-    }
-
-    if(bet < currBet) bet = currBet;
-
     if(!isPlayerTurn)
     {
         isPlayerTurn = ai.process(enemyGoal, enemy.damage(0), player.damage(0), eh, round, currBet);
@@ -103,6 +90,19 @@ void Game::update()
         if(isPlayerTurn)
             nextTurn();
     }
+
+    if(bet < 0) bet = 0;
+
+    if(pHp < eHp)
+    {
+        if(bet > pHp) bet = pHp;
+    }
+    else
+    {
+        if(bet > eHp) bet = eHp;
+    }
+
+    if(bet < currBet) bet = currBet;
 
     if(currBet-1 > player.damage(0) || currBet-1 > enemy.damage(0)) dice.roll(8);
     
@@ -268,7 +268,7 @@ void Game::run()
                         }
                         if(currbutton == 1)
                         {
-
+                            manual = !manual;
                         }
                         if(currbutton == 2)
                         {
@@ -289,13 +289,78 @@ void Game::run()
 
         if(state == 0)
         {
-            text.setPosition(200, 50);
-            text.setString("Use Arrow Buttons (UP or Down) To Navigate");
-            graphics->draw(text);
+            int shift = 380;
             for(int i = 0; i< menuButtons.size(); i++)
             {
-                menuButtons[i]->render(graphics, currbutton == i, 380, 200+80*i);
+                if(manual) shift = 630;
+                menuButtons[i]->render(graphics, currbutton == i, shift, 200+80*i);
             }
+
+            if(manual)
+            {
+                text.setPosition(20, 20);
+                text.setString("Manual");
+                graphics->draw(text);
+
+                text.setPosition(20, 60);
+                text.setString("Use Up and Down arrow keys to navigate Buttons, use Left and Right arrow keys to navigate cards.");
+                graphics->draw(text);
+
+                text.setPosition(20, 90);
+                text.setString("Your Goal is to decrease opponent's health to 0, before your opponent does that to you.");
+                graphics->draw(text);
+
+                text.setPosition(20, 120);
+                text.setString("There is a cube on the left hand side, if center cube lands on the same side you win.");
+                graphics->draw(text);
+
+                text.setPosition(20, 150);
+                text.setString("However your opponent may or may not have a different goal number.");
+                graphics->draw(text);
+
+                text.setPosition(20, 180);
+                text.setString("If the cube lands on the wrong side you lose the amount of hp you betted.");
+                graphics->draw(text);
+
+                text.setPosition(20, 210);
+                text.setString("The Cube is rolled when both of the players bet the same amount of HP.");
+                graphics->draw(text);
+
+                text.setPosition(20, 240);
+                text.setString("You can bail any time, meaning lose current bet of hp.");
+                graphics->draw(text);
+
+                text.setPosition(20, 270);
+                text.setString("Each of you also have cards that influence the outcome.");
+                graphics->draw(text);
+
+                text.setPosition(20, 300);
+                text.setString("For example if +2 card is played, and the side that then cube landed on is 3");
+                graphics->draw(text);
+
+                text.setPosition(20, 330);
+                text.setString("Then you win if you goal number is (cube on the left indicates) 5");
+                graphics->draw(text);
+
+                text.setPosition(20, 360);
+                text.setString("The sides are capped on 1 and 6, so if you play *2 and cube lands on 5.");
+                graphics->draw(text);
+
+                text.setPosition(20, 390);
+                text.setString("The outcome is 6 as it is a 6 sided cube.");
+                graphics->draw(text);
+
+                text.setPosition(20, 420);
+                text.setString("Card effects stack in a form of a queue (First in, First out)");
+                graphics->draw(text);
+            }
+            else
+            {
+                text.setPosition(180, 50);
+                text.setString("Use Arrow Buttons (UP or Down) To Navigate, To Select Click Enter.");
+                graphics->draw(text);
+            }
+
         }
         if(state == 1)
         {
@@ -320,7 +385,7 @@ void Game::run()
                 graphics->draw(text);
                 for (size_t i = 0; i < round.size(); i++)
                 {
-                    round.front().write(graphics, 20, 40+i * 30, text);
+                    round.front().write(graphics, 20, 40+i * 30, text, 550);
                     round.push(round.front());
                     round.pop();
                 }

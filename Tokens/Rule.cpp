@@ -42,12 +42,12 @@ int Rule::interprit(int side)
     return side;
 };
 
-void Rule::write(sf::RenderWindow* g, int x, int y, sf::Text t)
+void Rule::write(sf::RenderWindow* g, int x, int y, sf::Text t, int w)
 {
-    drawDescription(g, x, y, cond, 14, t);
+    drawDescription(g, x, y, cond, 14, t, w);
 };
 
-void Rule::drawDescription(sf::RenderWindow* g, double x, double y, std::string description, int size, sf::Text text)
+void Rule::drawDescription(sf::RenderWindow* g, double x, double y, std::string description, int size, sf::Text text, int w)
 {
     text.setCharacterSize(size);
     int yOffset = 0;
@@ -58,7 +58,7 @@ void Rule::drawDescription(sf::RenderWindow* g, double x, double y, std::string 
     {
         checker += " " + word;
         text.setString(checker);
-        if (text.getGlobalBounds().width > 140)
+        if (text.getGlobalBounds().width > w)
         {
             text.setPosition(x, y + yOffset);
             text.setString(line);

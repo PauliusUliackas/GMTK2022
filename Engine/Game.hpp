@@ -41,6 +41,8 @@ private:
     AI ai;
     bool log;
 
+    bool manual;
+
 public:
     Game();
     ~Game();
