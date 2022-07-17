@@ -17,4 +17,5 @@ public:
     ~Card();
     Rule& getRule();
     void render(sf::RenderWindow* g, bool isSelected, int x);
+    void render(sf::RenderWindow* g, int y, int x);
 };

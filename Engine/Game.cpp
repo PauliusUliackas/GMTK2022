@@ -51,6 +51,13 @@ Game::Game()
     background.loadFromFile("Art/Background1.png");
     BGSprite.setTexture(background);
     BGSprite.scale(2,2);
+
+    aiTimer = 50;
+
+    buffer.loadFromFile("Art/Song.wav");
+    sound.setBuffer(buffer);
+    sound.play();
+    sound.setLoop(true);
 };
 
 Game::~Game()
@@ -64,7 +71,7 @@ void Game::update()
     if(dice.isOver())
     {
         int side = dice.side();
-
+        lastLog = "";
         lastLog += "Dice landed on: " + std::to_string(side) + " ";
 
         while(!round.empty())
@@ -86,17 +93,23 @@ void Game::update()
 
     if(!isPlayerTurn)
     {
-        isPlayerTurn = ai.process(enemyGoal, enemy.damage(0), player.damage(0), eh, round, currBet);
-        
-        if(ai.play != nullptr)
+        if(aiTimer <= 0 && !dice.isRolling())
         {
-            round.push(ai.play->getRule());
-            ai.play = nullptr;
+            //aiTimer = 250;
+            isPlayerTurn = ai.process(enemyGoal, enemy.damage(0), player.damage(0), eh, round, currBet);
+            if(ai.play != nullptr)
+            {
+                std::cout<<"Played Card"<<std::endl;
+                round.push(ai.play->getRule());
+                ai.play = nullptr;
+            }
+            bet = ai.bet;
         }
-        bet = ai.bet;
-
+        aiTimer -= DeltaTime::get();
         if(isPlayerTurn)
+        {
             nextTurn();
+        }
     }
 
     if(bet < 0) bet = 0;
@@ -112,8 +125,8 @@ void Game::update()
 
     if(bet < currBet) bet = currBet;
     
-    if(pHp == 0) state = 2;
-    if(eHp == 0) state = 2;
+    if(player.dead()) state = 2;
+    if(enemy.dead()) state = 2;
 
 };
 
@@ -127,7 +140,7 @@ void Game::render()
     graphics->draw(text);
 
     ph.render(graphics);
-    eh.enemyRender(graphics);
+    eh.enemyRender(graphics, ai.play);
 
     if(isPlayerTurn) arrow.setPosition(620, 555);
     else arrow.setPosition(620, 45);
@@ -138,7 +151,7 @@ void Game::render()
     EG.setTexture(dice.getTexture(enemyGoal));
 
     graphics->draw(PG);
-    graphics->draw(EG);
+    //graphics->draw(EG);
 
 };
 
@@ -214,7 +227,6 @@ void Game::run()
                             Card* c = ph.play();
                             ai.predictPlayer(c->getRule(), round);
                             round.push(c->getRule());
-                            currBet = bet;
                         }
                         if(currbutton == 4)
                         {
@@ -397,7 +409,9 @@ void Game::run()
                 graphics->draw(text);
                 for (size_t i = 0; i < round.size(); i++)
                 {
-                    round.front().write(graphics, 20, 40+i * 30, text, 550);
+                    if(i < 15)
+                        round.front().write(graphics, 20, 40+i * 30, text, 550);
+
                     round.push(round.front());
                     round.pop();
                 }

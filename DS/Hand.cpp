@@ -14,7 +14,7 @@ void Hand::draw(int x, Database db)
 {
     for(int i = 0; i < x; i++)
     {
-        if(hand.size() > 5) break;
+        if(hand.size() > 4) break;
         hand.push_back(db.getRandomCard());
     }
     selected = 0;
@@ -48,7 +48,7 @@ void Hand::render(sf::RenderWindow* g)
     }
 }
 
-void Hand::enemyRender(sf::RenderWindow* g)
+void Hand::enemyRender(sf::RenderWindow* g, Card* play)
 {
     for(int i = 0; i < hand.size(); i++)
     {
@@ -57,6 +57,10 @@ void Hand::enemyRender(sf::RenderWindow* g)
         sprite.setTexture(txt);
         sprite.setPosition(180+40*i, 0);
         g->draw(sprite);
+    }
+    if(play != nullptr)
+    {
+        play->render(g, 180, 0);
     }
 };
 

@@ -35,3 +35,8 @@ void Button::render(sf::RenderWindow* g, bool isSelected, double x, double y)
         g->draw(t);
     g->draw(sprite);
 };
+
+void Button::srtLabel(std::string l)
+{
+    t.setString(l);
+}

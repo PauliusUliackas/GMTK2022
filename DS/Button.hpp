@@ -13,4 +13,5 @@ public:
     Button(std::string name, std::string);
     ~Button();
     void render(sf::RenderWindow*, bool isSelected, double, double);
+    void srtLabel(std::string);
 };

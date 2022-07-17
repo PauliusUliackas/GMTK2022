@@ -17,7 +17,7 @@ public:
     void next();
     void prev();
     void render(sf::RenderWindow* g);
-    void enemyRender(sf::RenderWindow* g);
+    void enemyRender(sf::RenderWindow* g, Card*);
     void discard();
     int size();
     Card* getSelected();

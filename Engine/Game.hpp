@@ -8,6 +8,7 @@
 #include "../DS/Hand.hpp"
 #include <queue>
 #include "AI.hpp"
+#include <SFML/Audio.hpp>
 
 class Game
 {
@@ -47,6 +48,11 @@ private:
     sf::Sprite BGSprite;
 
     std::string lastLog;
+
+    float aiTimer;
+
+    sf::SoundBuffer buffer;
+    sf::Sound sound;
 
 public:
     Game();

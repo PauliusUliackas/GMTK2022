@@ -47,3 +47,8 @@ int Lifes::damage(int x)
     if(hp < 0) hp = 0;
     return hp;
 };
+
+bool Lifes::dead()
+{
+    return length <= 0;
+}

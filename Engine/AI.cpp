@@ -12,7 +12,7 @@ AI::~AI()
 
 bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule> currentRules, int currentBet)
 {   
-    std::cout<<"Start"<<std::endl;
+    //std::cout<<"Start"<<std::endl;
     std::vector<Rule> rules;
 
     int rightSide = 0;
@@ -22,7 +22,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
         rules.push_back(currentRules.front());
         currentRules.pop();
     }
-    std::cout<<"1"<<std::endl;
+    //std::cout<<"1"<<std::endl;
     for(int i = 1; i <= 6; i++)
     {
         int out = i;
@@ -33,7 +33,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
         if(out == goal) rightSide++;
         probabilities[i-1] = out;
     }
-    std::cout<<"2"<<std::endl;
+    //std::cout<<"2"<<std::endl;
     // Our Chance Of win
     double chance = rightSide/probabilities.size();
 
@@ -48,7 +48,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
     }
 
     chanceOfPlayer /= playerProbabilities.size();
-    std::cout<<"3"<<std::endl;
+    //std::cout<<"3"<<std::endl;
     // 1) Check card influences depth.
     // 2) If hp more than player check if it can harm the player.
     // 3) Else less than player check if it can win.
@@ -59,7 +59,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
 
     int Card;
     Card = search(rules, ownHand, goal, 1, HP > playerHP, chance);
-    std::cout<<"4"<<std::endl;
+    //std::cout<<"4"<<std::endl;
     for(int i = 0; i < ownHand.size(); i++)
     {
         if(i == Card)
@@ -69,7 +69,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
         }
         ownHand.next();
     }
-    std::cout<<"5"<<std::endl;
+    //std::cout<<"5"<<std::endl;
     if(Functions::Random(0, 100) == 2) bet = 100;
     else if(chanceOfPlayer > chance && Functions::Random(0, 100) > 30) bet = currentBet;
     else bet = currentBet + Functions::Random(1, 10);
@@ -77,7 +77,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
     if(playerHP < bet) bet = playerHP;
     if(HP < bet) bet = HP;
     if(bet > 100) bet = 100;
-    std::cout<<"End"<<std::endl;
+    //std::cout<<"End"<<std::endl;
     return true;
 };
 

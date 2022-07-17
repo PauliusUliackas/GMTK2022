@@ -15,4 +15,5 @@ public:
     ~Lifes();
     void display(sf::RenderWindow*, std::string text, double x, double y);
     int damage(int damage);
+    bool dead();
 };

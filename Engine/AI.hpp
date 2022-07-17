@@ -25,7 +25,6 @@ public:
     void predictPlayer(Rule newRule, std::queue<Rule> currentRules);
     void print(std::vector<int> i);
     int search(std::vector<Rule> rules, Hand& hand, int goal, int depth, bool winning, int chance);
-
     double selfChance(std::vector<Rule>, int goal);
     double enemyChance(std::vector<Rule>);
 };
