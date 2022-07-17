@@ -106,6 +106,8 @@ void Game::update()
 
     if(currBet-1 > player.damage(0) || currBet-1 > enemy.damage(0)) dice.roll(8);
     
+    if(pHp == 0) state = 2;
+    if(eHp == 0) state = 2;
 
 };
 
@@ -391,6 +393,31 @@ void Game::run()
                 }
             }
         }
+
+        if(state == 2)
+        {
+            int pHp = player.damage(0);
+            int eHp = enemy.damage(0);
+            if(pHp == 0 && eHp == 0)
+            {
+                text.setString("You Drew");
+                text.setPosition(350, 200);
+                graphics->draw(text);
+            }
+            else if(pHp == 0)
+            {
+                text.setString("You Lost");
+                text.setPosition(350, 200);
+                graphics->draw(text);
+            }
+            else if(eHp == 0)
+            {
+                text.setString("You Won, but at what cost");
+                text.setPosition(350, 200);
+                graphics->draw(text);
+            }
+        }
+
         DeltaTime::tick();
         // end the current frame
         graphics->display();

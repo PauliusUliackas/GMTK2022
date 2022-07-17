@@ -6,7 +6,9 @@ Database::Database(/* args */)
         new Card("Side that the cube lands on is + 2"),
         new Card("Side that the cube lands on is - 2"), 
         new Card("Side that the cube lands on is * 2"), 
-        new Card("Side that the cube lands on is / 2"), 
+        new Card("Side that the cube lands on is / 2"),
+        new Card("Side that the cube lands on is + 1"),
+        new Card("Side that the cube lands on is - 1"),
         };
 }
 
