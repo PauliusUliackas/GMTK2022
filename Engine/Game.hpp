@@ -43,6 +43,11 @@ private:
 
     bool manual;
 
+    sf::Texture background;
+    sf::Sprite BGSprite;
+
+    std::string lastLog;
+
 public:
     Game();
     ~Game();

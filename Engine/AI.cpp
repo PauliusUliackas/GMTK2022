@@ -58,7 +58,7 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
     // 6) if Losing current round call
 
     int Card;
-    Card = search(rules, ownHand, goal, 3, HP > playerHP, chance);
+    Card = search(rules, ownHand, goal, 1, HP > playerHP, chance);
     std::cout<<"4"<<std::endl;
     for(int i = 0; i < ownHand.size(); i++)
     {
@@ -75,6 +75,8 @@ bool AI::process(int goal, int HP, int playerHP, Hand& ownHand, std::queue<Rule>
     else bet = currentBet + Functions::Random(1, 10);
 
     if(playerHP < bet) bet = playerHP;
+    if(HP < bet) bet = HP;
+    if(bet > 100) bet = 100;
     std::cout<<"End"<<std::endl;
     return true;
 };
@@ -92,7 +94,7 @@ int AI::search(std::vector<Rule> rules, Hand& hand, int goal, int depth, bool wi
         playerChances[i] = enemyChance(rules);
         //std::cout<<"3.1.2"<<std::endl;
         hand.next();
-        if(depth > 0 && hand.size() > 0) search(rules, hand, goal, depth-1, winning, chance);
+        if(depth > 1 && hand.size() > 0) search(rules, hand, goal, depth-1, winning, chance);
         //std::cout<<"3.1.3"<<std::endl;
         hand.add(c);
         rules.pop_back();

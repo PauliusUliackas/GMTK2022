@@ -5,7 +5,7 @@ Game::Game()
 {
     graphics = new sf::RenderWindow(sf::VideoMode(800, 600), "My window");
     Functions::init();
-
+    lastLog = "";
     Button* roll = new Button("LB", "Round Log");
     Button* AB = new Button("AB", "Raise Bet");
     Button* B = new Button("B", "Lower Bet");
@@ -31,7 +31,7 @@ Game::Game()
     text.setFillColor(sf::Color::White);
 
     //test = new Card("Side that the cube lands on is + 2");
-
+    isPlayerTurn = Functions::Random(1,3) == 2;
     newRound();
 
     texture.loadFromFile("Art/Arrow.png");
@@ -47,6 +47,10 @@ Game::Game()
     log = false;
     manual = false;
     state =  0;
+
+    background.loadFromFile("Art/Background1.png");
+    BGSprite.setTexture(background);
+    BGSprite.scale(2,2);
 };
 
 Game::~Game()
@@ -61,11 +65,15 @@ void Game::update()
     {
         int side = dice.side();
 
+        lastLog += "Dice landed on: " + std::to_string(side) + " ";
+
         while(!round.empty())
         {
             side = round.front().interprit(side);
             round.pop();
         }
+
+        lastLog += "Output was: " + std::to_string(side);
 
         if(playerGoal != side) player.damage(bet);
         if(enemyGoal != side) enemy.damage(bet);
@@ -103,8 +111,6 @@ void Game::update()
     }
 
     if(bet < currBet) bet = currBet;
-
-    if(currBet-1 > player.damage(0) || currBet-1 > enemy.damage(0)) dice.roll(8);
     
     if(pHp == 0) state = 2;
     if(eHp == 0) state = 2;
@@ -132,7 +138,7 @@ void Game::render()
     EG.setTexture(dice.getTexture(enemyGoal));
 
     graphics->draw(PG);
-    //graphics->draw(EG);
+    graphics->draw(EG);
 
 };
 
@@ -143,9 +149,8 @@ void Game::newRound()
     ph.draw(5, db);
     eh.draw(5, db);
     isCall = false;
-    isPlayerTurn = true;
-    currBet = 0;
-    bet = 0;
+    currBet = 1;
+    bet = 1;
 
     playerGoal = Functions::Random(1, 7);
     enemyGoal = Functions::Random(1, 7);
@@ -165,7 +170,6 @@ void Game::nextTurn()
 
     if(currBet == bet && isCall)
     {
-        std::cout<<"Roll"<<std::endl;
         dice.roll(5);
     }
     else if(currBet == bet)
@@ -210,6 +214,7 @@ void Game::run()
                             Card* c = ph.play();
                             ai.predictPlayer(c->getRule(), round);
                             round.push(c->getRule());
+                            currBet = bet;
                         }
                         if(currbutton == 4)
                         {
@@ -366,6 +371,7 @@ void Game::run()
         }
         if(state == 1)
         {
+            graphics->draw(BGSprite);
             player.display(graphics, "Player", 660, 550);
             enemy.display(graphics, "Enemy", 660, 40);
 
@@ -376,6 +382,10 @@ void Game::run()
 
             update();
             render();
+
+            text.setPosition(200, 180);
+            text.setString(lastLog);
+            graphics->draw(text);
 
             if(log)
             {
@@ -391,6 +401,29 @@ void Game::run()
                     round.push(round.front());
                     round.pop();
                 }
+                std::vector<int> out;
+                for(int i = 1; i<= 6; i++)
+                {
+                    int test = i;
+                    for (size_t i = 0; i < round.size(); i++)
+                    {
+                    round.push(round.front());
+                    test = round.front().interprit(test);
+                    round.pop();
+                    }
+                    out.push_back(test);
+                }
+
+                for(int i = 0; i < out.size(); i++)
+                {
+                    text.setPosition(50+50*i, 550);
+                    text.setString(std::to_string(i+1)+": "+std::to_string(out[i]));
+                    graphics->draw(text);
+                }
+                text.setPosition(50, 530);
+                text.setString("Automatic Calculator:");
+                graphics->draw(text);
+
             }
         }
 
