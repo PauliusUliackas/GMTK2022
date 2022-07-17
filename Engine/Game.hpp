@@ -20,7 +20,7 @@ private:
     Hand ph, eh;
     int currbutton;
 
-    std::vector<Button*> buttons;
+    std::vector<Button*> buttons, menuButtons;
 
     int bet, currBet;
     sf::Font font;

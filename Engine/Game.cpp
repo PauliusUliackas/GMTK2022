@@ -18,6 +18,8 @@ Game::Game()
     buttons.push_back(PB);
     buttons.push_back(NB);
     buttons.push_back(QB);
+
+    menuButtons = {new Button("SB", "Start"), new Button("MB", "Mini Manual"), new Button("QB", "Quit")};
     
     currbutton = 0;
 
@@ -43,6 +45,8 @@ Game::Game()
     EG.scale(2,2);
 
     log = false;
+
+    state =  0;
 };
 
 Game::~Game()
@@ -187,60 +191,91 @@ void Game::run()
 
             if(event.type == sf::Event::KeyPressed)
             {
-
-                if(event.key.code == sf::Keyboard::Enter && !dice.isRolling() && isPlayerTurn)
+                if(state == 1)
                 {
-                    if(currbutton == 0)
+                    if(event.key.code == sf::Keyboard::Enter && !dice.isRolling() && isPlayerTurn)
                     {
-                        log = !log;
-                    }
-                    if(currbutton == 1)
-                        bet++;
-                    if(currbutton == 2)
-                        bet--;
-                    if(currbutton == 3 && ph.size() > 0)
-                    {
-                        Card* c = ph.play();
-                        ai.predictPlayer(c->getRule(), round);
-                        round.push(c->getRule());
-                    }
-                    if(currbutton == 4)
-                    {
-                        isPlayerTurn = !isPlayerTurn;
-                        nextTurn();
-                    }
-                    if(currbutton == 5)
-                    {
-                        while(!round.empty())
+                        if(currbutton == 0)
                         {
-                            round.pop();
+                            log = !log;
                         }
+                        if(currbutton == 1)
+                            bet++;
+                        if(currbutton == 2)
+                            bet--;
+                        if(currbutton == 3 && ph.size() > 0)
+                        {
+                            Card* c = ph.play();
+                            ai.predictPlayer(c->getRule(), round);
+                            round.push(c->getRule());
+                        }
+                        if(currbutton == 4)
+                        {
+                            isPlayerTurn = !isPlayerTurn;
+                            nextTurn();
+                        }
+                        if(currbutton == 5)
+                        {
+                            while(!round.empty())
+                            {
+                                round.pop();
+                            }
 
-                        if(isPlayerTurn) player.damage(currBet);
-                        else enemy.damage(currBet);
+                            if(isPlayerTurn) player.damage(currBet);
+                            else enemy.damage(currBet);
 
-                        isPlayerTurn = !isPlayerTurn;
-                        newRound();
+                            isPlayerTurn = !isPlayerTurn;
+                            newRound();
+                        }
+                    }
+                    if(event.key.code == sf::Keyboard::Down)
+                    {
+                        currbutton++;
+                        if(currbutton >= buttons.size()) currbutton = 0;
+                    };
+                    if(event.key.code == sf::Keyboard::Up)
+                    {
+                        currbutton--;
+                        if(currbutton < 0) currbutton = buttons.size()-1;
+                    };
+                    if(event.key.code == sf::Keyboard::Left)
+                    {
+                        ph.prev();
+                    };
+                    if(event.key.code == sf::Keyboard::Right)
+                    {
+                        ph.next();
                     }
                 }
 
-                if(event.key.code == sf::Keyboard::Down)
+                if(state == 0)
                 {
-                    currbutton++;
-                    if(currbutton >= buttons.size()) currbutton = 0;
-                };
-                if(event.key.code == sf::Keyboard::Up)
-                {
-                    currbutton--;
-                    if(currbutton < 0) currbutton = buttons.size()-1;
-                };
-                if(event.key.code == sf::Keyboard::Left)
-                {
-                    ph.prev();
-                };
-                if(event.key.code == sf::Keyboard::Right)
-                {
-                    ph.next();
+                    if(event.key.code == sf::Keyboard::Down)
+                    {
+                        currbutton++;
+                        if(currbutton >= menuButtons.size()) currbutton = 0;
+                    };
+                    if(event.key.code == sf::Keyboard::Up)
+                    {
+                        currbutton--;
+                        if(currbutton < 0) currbutton = menuButtons.size()-1;
+                    };
+                    if(event.key.code == sf::Keyboard::Enter)
+                    {
+                        if(currbutton == 0)
+                        {
+                            state = 1;
+                        }
+                        if(currbutton == 1)
+                        {
+
+                        }
+                        if(currbutton == 2)
+                        {
+                            return;
+                        }
+                    }
+
                 }
             }
             
@@ -252,33 +287,45 @@ void Game::run()
 
         graphics->clear(sf::Color::Black);
 
-        player.display(graphics, "Player", 660, 550);
-        enemy.display(graphics, "Enemy", 660, 40);
-
-        for(int i = 0; i< buttons.size(); i++)
+        if(state == 0)
         {
-            buttons[i]->render(graphics, currbutton == i, 650, 150+64*i);
-        }
-
-        update();
-        render();
-
-        if(log)
-        {
-            text.setPosition(20, 20);
-            text.setString("Log:");
-            sf::RectangleShape rs(sf::Vector2f(600, 600));
-            rs.setFillColor(sf::Color::Black);
-            graphics->draw(rs);
+            text.setPosition(200, 50);
+            text.setString("Use Arrow Buttons (UP or Down) To Navigate");
             graphics->draw(text);
-            for (size_t i = 0; i < round.size(); i++)
+            for(int i = 0; i< menuButtons.size(); i++)
             {
-                round.front().write(graphics, 20, 40+i * 30, text);
-                round.push(round.front());
-                round.pop();
+                menuButtons[i]->render(graphics, currbutton == i, 380, 200+80*i);
             }
         }
+        if(state == 1)
+        {
+            player.display(graphics, "Player", 660, 550);
+            enemy.display(graphics, "Enemy", 660, 40);
 
+            for(int i = 0; i< buttons.size(); i++)
+            {
+                buttons[i]->render(graphics, currbutton == i, 650, 150+64*i);
+            }
+
+            update();
+            render();
+
+            if(log)
+            {
+                text.setPosition(20, 20);
+                text.setString("Log:");
+                sf::RectangleShape rs(sf::Vector2f(600, 600));
+                rs.setFillColor(sf::Color::Black);
+                graphics->draw(rs);
+                graphics->draw(text);
+                for (size_t i = 0; i < round.size(); i++)
+                {
+                    round.front().write(graphics, 20, 40+i * 30, text);
+                    round.push(round.front());
+                    round.pop();
+                }
+            }
+        }
         DeltaTime::tick();
         // end the current frame
         graphics->display();
