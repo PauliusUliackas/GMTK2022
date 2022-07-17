@@ -6,12 +6,12 @@ Game::Game()
     graphics = new sf::RenderWindow(sf::VideoMode(800, 600), "My window");
     Functions::init();
 
-    Button* roll = new Button("LB");
-    Button* AB = new Button("AB");
-    Button* B = new Button("B");
-    Button* PB = new Button("PB");
-    Button* NB = new Button("NB");
-    Button* QB = new Button("QB");
+    Button* roll = new Button("LB", "Round Log");
+    Button* AB = new Button("AB", "Raise Bet");
+    Button* B = new Button("B", "Lower Bet");
+    Button* PB = new Button("PB", "Play Card");
+    Button* NB = new Button("NB", "Next turn");
+    Button* QB = new Button("QB", "Bail");
     buttons.push_back(roll);
     buttons.push_back(AB);
     buttons.push_back(B);
@@ -257,7 +257,7 @@ void Game::run()
 
         for(int i = 0; i< buttons.size(); i++)
         {
-            buttons[i]->render(graphics, currbutton == i, 650, 150+50*i);
+            buttons[i]->render(graphics, currbutton == i, 650, 150+64*i);
         }
 
         update();
